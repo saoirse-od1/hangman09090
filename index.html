@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sentence Hangman Game</title>
+    <!-- Link to Google Fonts for 'Roboto' -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Include your CSS styles -->
     <style>
+        /* CSS Styles */
+
+        /* Body Styles */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #1e1e2f;
@@ -14,13 +18,36 @@
             margin: 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
             position: relative;
         }
 
+        /* Flash Overlay */
+        #flashOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: red;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        /* Disabled Buttons */
+        .disabled {
+            background-color: pink !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Canvas Container */
         .canvas-container {
             display: flex;
             flex-wrap: nowrap;
@@ -31,12 +58,14 @@
             padding-left: 20px;
         }
 
+        /* Horizontal Scroll */
         .horizontal-scroll {
             overflow-x: scroll;
             max-width: 90vw;
             margin-bottom: 20px;
         }
 
+        /* Hangman Canvas */
         .hangmanCanvas {
             border: 2px solid #ffcc00;
             background-color: #2b2b40;
@@ -45,12 +74,12 @@
             flex: 0 0 auto;
             transition: transform 0.3s, border-color 0.3s;
         }
-
         .hangmanCanvas.active {
             transform: scale(1.1);
             border-color: #00ff00;
         }
 
+        /* Sentence Display */
         #sentenceDisplay {
             font-size: 24px;
             margin: 30px 0;
@@ -60,7 +89,6 @@
             gap: 10px;
             max-width: 90vw;
         }
-
         .wordDisplay {
             cursor: pointer;
             padding: 8px 10px;
@@ -69,12 +97,12 @@
             background-color: #3b3b52;
             transition: background-color 0.3s, color 0.3s;
         }
-
         .wordDisplay.active {
             background-color: #ffcc00;
             color: #1e1e2f;
         }
 
+        /* Letters */
         #letters {
             margin-top: 30px;
             display: flex;
@@ -83,7 +111,6 @@
             max-width: 90vw;
             gap: 10px;
         }
-
         .letter-btn {
             display: inline-block;
             margin: 5px;
@@ -96,18 +123,17 @@
             font-size: 18px;
             transition: background-color 0.3s, transform 0.3s;
         }
-
         .letter-btn:hover:not(:disabled) {
             background-color: #e6b800;
             transform: scale(1.1);
         }
-
         .letter-btn:disabled {
             background-color: #444;
             color: #999;
             cursor: not-allowed;
         }
 
+        /* Wildcard Keyboard */
         .wildcard-keyboard {
             display: none;
             position: fixed;
@@ -119,8 +145,8 @@
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
             animation: rainbowGlow 1s infinite alternate;
+            z-index: 100;
         }
-
         .wildcard-key {
             display: inline-block;
             margin: 5px;
@@ -133,11 +159,9 @@
             font-size: 18px;
             transition: background-color 0.3s, transform 0.3s;
         }
-
         .wildcard-key:hover {
             transform: scale(1.1);
         }
-
         .wildcard-message {
             display: none;
             font-size: 48px;
@@ -145,12 +169,13 @@
             margin-top: 20px;
             color: #ffffff;
             animation: flashText 1s infinite alternate;
+            z-index: 100;
         }
 
+        /* Guess Word Container */
         .guess-word-container {
             margin-top: 20px;
         }
-
         .guess-word-input {
             padding: 10px;
             font-size: 18px;
@@ -158,7 +183,6 @@
             border: none;
             margin-right: 10px;
         }
-
         .guess-word-btn {
             padding: 10px 15px;
             font-size: 18px;
@@ -168,17 +192,16 @@
             border-radius: 8px;
             cursor: pointer;
         }
-
         .guess-word-btn:hover {
             background-color: #d32f2f;
         }
-
         .devil-message {
             font-size: 24px;
             color: #e63946;
             margin-top: 10px;
         }
 
+        /* Popups */
         .rules-popup, .game-over-popup, .win-popup {
             display: none;
             position: fixed;
@@ -195,7 +218,6 @@
             overflow-y: auto;
             z-index: 10;
         }
-
         .close-btn {
             position: absolute;
             top: 10px;
@@ -212,6 +234,7 @@
             text-align: center;
         }
 
+        /* Question Mark Button */
         .question-mark {
             position: absolute;
             top: 20px;
@@ -229,6 +252,111 @@
             z-index: 5;
         }
 
+        /* Music Toggle Button */
+        .music-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #ffcc00;
+            color: #1e1e2f;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 10px 15px;
+            font-size: 18px;
+            z-index: 5;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .music-toggle:hover {
+            background-color: #e6b800;
+            transform: scale(1.05);
+        }
+
+        /* Quiz Button */
+        .quiz-btn {
+            position: absolute;
+            top: 20px;
+            left: 150px; /* Adjust as needed */
+            background-color: #ffcc00;
+            color: #1e1e2f;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 10px 15px;
+            font-size: 18px;
+            z-index: 5;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .quiz-btn:hover {
+            background-color: #e6b800;
+            transform: scale(1.05);
+        }
+        .quiz-btn:disabled {
+            background-color: #444;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        /* Quiz Modal */
+        .quiz-modal {
+            display: none;
+            position: fixed;
+            z-index: 15;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .quiz-content {
+            background-color: #2b2b40;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            color: #ffcc00;
+            position: relative;
+        }
+        #quizAnswerInput {
+            width: calc(100% - 20px);
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        .submit-quiz-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .submit-quiz-btn:hover {
+            background-color: #45a049;
+        }
+        .close-quiz-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #e63946;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            line-height: 30px;
+            text-align: center;
+        }
+
+        /* Animations */
         @keyframes rainbowGlow {
             0% { background-color: #ff0000; }
             20% { background-color: #ff7f00; }
@@ -237,7 +365,6 @@
             80% { background-color: #0000ff; }
             100% { background-color: #8b00ff; }
         }
-
         @keyframes flashText {
             0% { color: #ff0000; }
             20% { color: #ff7f00; }
@@ -247,74 +374,163 @@
             100% { color: #8b00ff; }
         }
 
+        /* Header */
         h1 {
             font-size: 48px;
             margin-bottom: 20px;
             color: #ffcc00;
+        }
+
+        /* Difficulty Selection */
+        .difficulty-selection {
+            margin-bottom: 20px;
+        }
+        .difficulty-btn {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #ffcc00;
+            color: #1e1e2f;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .difficulty-btn:hover {
+            background-color: #e6b800;
+            transform: scale(1.1);
+        }
+
+        /* Hidden Class */
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
     <h1>Sentence Hangman Game</h1>
     <button id="questionMark" class="question-mark">?</button>
+    <button id="musicToggle" class="music-toggle">Music Off</button>
+    <button id="quizButton" class="quiz-btn">Hint</button>
+    <!-- Difficulty Selection -->
+    <div id="difficultySelection" class="difficulty-selection">
+        <h2>Select Difficulty Level:</h2>
+        <button id="easyBtn" class="difficulty-btn">Easy</button>
+        <button id="mediumBtn" class="difficulty-btn">Medium</button>
+        <button id="hardBtn" class="difficulty-btn">Hard</button><br>
+        <p>you can now use guess full word option on three letter words if you hsve not already guessed a letter on them ie , if you think a word is the , you can guess full word and get a wildcard</p>
+        
+    </div>
+
+    <!-- Rules Popup -->
     <div id="rulesPopup" class="rules-popup">
         <button id="closeRules" class="close-btn">&times;</button>
         <h2>Game Rules</h2>
+        <p>Select a difficulty level to start the game:</p>
+        <ul>
+            <li><strong>Easy:</strong> Simple sentences, more attempts, wildcards available.</li>
+            <li><strong>Medium:</strong> Moderate sentences, standard attempts, limited wildcards.</li>
+            <li><strong>Hard:</strong> Complex sentences, fewer attempts, no wildcards.</li>
+        </ul>
         <p>1. Select a word by clicking on it to start guessing letters for that word.</p>
         <p>2. You can guess letters by clicking on the buttons below the sentence.</p>
         <p>3. If you guess the correct letters, they will be revealed in the word.</p>
-        <p>4. Each word has a maximum of 6 incorrect attempts before the hangman is complete.</p>
+        <p>4. Each word has a maximum number of incorrect attempts before the hangman is complete.</p>
         <p>5. You can guess the entire word at any point using the input box below the sentence.</p>
-        <p>6. If you guess a word correctly and it is longer than 4 letters, and you haven't already guessed more than two letters, you earn a Wild Card.</p>
-        <p>7. If you guess a word incorrectly, you get a devil. Two devils and you're out.</p>
-        <p>8. The game ends when all words are guessed correctly or you reach two devils.</p>
+        <p>6. If you guess a word correctly under certain conditions, you may earn a Wild Card.</p>
+        <p>7. If you guess a word incorrectly, you get a devil. Reach the devil limit and you're out.</p>
+        <p>8. The game ends when all words are guessed correctly or you reach the devil limit.</p>
     </div>
 
+    <!-- Game Over Popup -->
     <div id="gameOverPopup" class="game-over-popup">
         <button id="closeGameOver" class="close-btn">&times;</button>
         <h2>Game Over</h2>
         <p id="gameOverMessage"></p>
     </div>
 
+    <!-- Win Popup -->
     <div id="winPopup" class="win-popup">
         <button id="closeWin" class="close-btn">&times;</button>
         <h2>Congratulations!</h2>
         <p>You've guessed the entire sentence correctly!</p>
     </div>
- 
-    <div id="sentenceDisplay"></div>
-    <div class="horizontal-scroll" id="horizontalScroll">
+
+    <!-- Quiz Modal -->
+    <div id="quizModal" class="quiz-modal">
+        <div class="quiz-content">
+            <button id="closeQuizModal" class="close-quiz-btn">&times;</button>
+            <h2>Quiz Question</h2>
+            <p id="quizQuestion"></p>
+            <input type="text" id="quizAnswerInput" placeholder="Your Answer">
+            <button id="submitQuizAnswer" class="submit-quiz-btn">Submit Answer</button>
+        </div>
+    </div>
+
+    <!-- Game Elements (Initially Hidden) -->
+    <div id="sentenceDisplay" style="display: none;"></div>
+    <div class="horizontal-scroll" id="horizontalScroll" style="display: none;">
         <div class="canvas-container" id="canvasContainer"></div>
     </div>
-    <div id="letters"></div>
+    <div id="letters" style="display: none;"></div>
 
-    <div class="guess-word-container">
-        <input type="text" id="guessWordInput" class="guess-word-input" placeholder="Guess the full word">
+    <div class="guess-word-container" style="display: none;">
+        <input type="text" id="guessWordInput" class="guess-word-input" placeholder="Guess the word">
         <button id="guessWordBtn" class="guess-word-btn">Guess Word</button>
     </div>
     <div id="devilMessage" class="devil-message"></div>
+    <div id="flashOverlay"></div>
 
     <div id="wildcardKeyboard" class="wildcard-keyboard"></div>
     <div id="wildcardMessage" class="wildcard-message">WILDCARD!</div>
 
-        <audio id="correctGuessSound" src="correct-guess.mp3"></audio>
+    <!-- Audio Elements -->
+    <audio id="backgroundMusic" src="backgroundMusic.mp3" loop></audio>
+    <audio id="correctGuessSound" src="correct-guess.mp3"></audio>
     <audio id="wrongGuessSound" src="wrong-guess.mp3"></audio>
     <audio id="gameOverSound" src="game-over.mp3"></audio>
     <audio id="winSound" src="win.mp3"></audio>
-  <audio id="devilSound" src="devil-sound.mp3"></audio>
-    <audio id="wildcardSound" src="wildcard-sound.mp3"></audio>
+    <audio id="decree" src="bydecree.mp3"></audio>
+    <audio id="devilSound" src="devil-sound.mp3"></audio>
 
+    <!-- JavaScript Code -->
     <script>
-        const sentences = [
-            "oh katie my wise test subject for the first ever offical round of this game i hope you enjoy"
+        // JavaScript Code
+
+        // Sentence Arrays with Similar Lengths
+        const easySentences = [
+            "The sun shines brightly today",
+            "She walks her dog every morning",
+            "They enjoy playing in the park",
+            "He reads a book before bed",
+            "We love eating ice cream"
         ];
-        let chosenSentence = sentences[Math.floor(Math.random() * sentences.length)].toUpperCase();
-        let words = chosenSentence.split(' ');
-        let guessedLetters = [];
-        let remainingAttemptsPerWord = Array(words.length).fill(6);
-        let currentWordIndex = 0;
-        let wildCardAvailable = false;
-        let devils = 0;
+
+        const mediumSentences = [
+            "The artist paints with vibrant colors",
+            "Birds migrate south during winter",
+            "She solved the puzzle quickly",
+            "They debated the topic intensely",
+            "He discovered a hidden treasure"
+        ];
+
+        const hardSentences = [
+        "exploring the depths of the ocean she discovered an octopuses garden with creatures that defied all known classifications in history and sparked endless curiosity",
+
+        ];
+
+        // Declare Variables
+        let chosenSentence;
+        let words;
+        let guessedLetters;
+        let remainingAttemptsPerWord;
+        let currentWordIndex;
+        let wildCardAvailable;
+        let devils;
+        let maxAttemptsPerWord;
+        let maxDevils;
+        let wildcardsUsed;
+        let maxWildcards;
 
         const canvasContainer = document.getElementById('canvasContainer');
         const horizontalScroll = document.getElementById('horizontalScroll');
@@ -327,14 +543,61 @@
         const winPopup = document.getElementById('winPopup');
         const closeWin = document.getElementById('closeWin');
         const gameOverMessage = document.getElementById('gameOverMessage');
-                const correctGuessSound = document.getElementById('correctGuessSound');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const correctGuessSound = document.getElementById('correctGuessSound');
         const wrongGuessSound = document.getElementById('wrongGuessSound');
         const gameOverSound = document.getElementById('gameOverSound');
-        const devilSound = document.getElementById('devilSound');
-        const wildcardSound = document.getElementById('wildcardSound');
         const winSound = document.getElementById('winSound');
+        const decree = document.getElementById('decree');
+        const devilSound = document.getElementById('devilSound');
+        const flashOverlay = document.getElementById('flashOverlay');
 
-        
+        // Music Toggle Elements
+        const musicToggle = document.getElementById('musicToggle');
+        let isMusicPlaying = false;
+
+        // Quiz Elements
+        const quizButton = document.getElementById('quizButton');
+        const quizModal = document.getElementById('quizModal');
+        const quizQuestionElement = document.getElementById('quizQuestion');
+        const quizAnswerInput = document.getElementById('quizAnswerInput');
+        const submitQuizAnswer = document.getElementById('submitQuizAnswer');
+        const closeQuizModal = document.getElementById('closeQuizModal');
+
+        let quizUsed = false; // To ensure the quiz can only be used once
+        let hintUsed = false; // To ensure the hint is only used once
+
+        // Quiz Questions Array
+        const quizQuestions = [
+            {
+                question: "What is my fav dinner ( answer in one word )",
+                answer: "roast"
+            },
+          
+            // Add more quiz questions as needed
+        ];
+
+        // Event listener for music toggle button
+        musicToggle.addEventListener('click', () => {
+            if (isMusicPlaying) {
+                backgroundMusic.pause();
+                musicToggle.textContent = 'Music Off';
+            } else {
+                backgroundMusic.play();
+                musicToggle.textContent = 'Music On';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        });
+
+        // Optionally, start music when user clicks difficulty
+        document.getElementById('difficultySelection').addEventListener('click', () => {
+            if (!isMusicPlaying) {
+                backgroundMusic.play();
+                isMusicPlaying = true;
+                musicToggle.textContent = 'Music On';
+            }
+        });
+
         questionMark.addEventListener('click', () => {
             rulesPopup.style.display = 'block';
         });
@@ -352,6 +615,100 @@
             winPopup.style.display = 'none';
             window.location.reload();
         });
+
+        // Difficulty Buttons Event Listeners with Confirmation Dialogs
+        document.getElementById('easyBtn').addEventListener('click', () => {
+            if (confirm("Easy Mode:\n- More devils allowed\n- Easier sentences\nProceed?")) {
+                startGame('easy');
+            }
+        });
+
+        document.getElementById('mediumBtn').addEventListener('click', () => {
+            if (confirm("Medium Mode:\n- Standard game settings\nProceed?")) {
+                startGame('medium');
+            }
+        });
+
+        document.getElementById('hardBtn').addEventListener('click', () => {
+            if (confirm("Hard Mode:\n- Fewer devils allowed\n- Harder sentences\s\nProceed?")) {
+                startGame('hard');
+            }
+        });
+
+        function startGame(difficulty) {
+            // Hide the difficulty selection
+            document.getElementById('difficultySelection').style.display = 'none';
+
+            // Set game parameters based on difficulty
+            switch (difficulty) {
+                case 'easy':
+                    chosenSentence = easySentences[Math.floor(Math.random() * easySentences.length)].toUpperCase();
+                    maxAttemptsPerWord = 6;
+                    wildCardAvailable = true;
+                    maxDevils = 4;
+                    maxWildcards = 20;
+                    break;
+                case 'medium':
+                    chosenSentence = mediumSentences[Math.floor(Math.random() * mediumSentences.length)].toUpperCase();
+                    maxAttemptsPerWord = 6;
+                    wildCardAvailable = true;
+                    maxDevils = 3;
+                    maxWildcards = 20;
+                    break;
+                case 'hard':
+                    chosenSentence = hardSentences[Math.floor(Math.random() * hardSentences.length)].toUpperCase();
+                    maxAttemptsPerWord = 6;
+                    wildCardAvailable = true;
+                    maxDevils = 2;
+                    maxWildcards = 20;
+                    break;
+            }
+
+            // Initialize variables
+            words = chosenSentence.split(' ');
+            guessedLetters = [];
+            remainingAttemptsPerWord = Array(words.length).fill(maxAttemptsPerWord);
+            currentWordIndex = 0;
+            devils = 0;
+            wildcardsUsed = 0;
+            devilMessage.textContent = `Devils: ${devils} / ${maxDevils}`;
+
+            // Reset quiz and hint usage
+            quizUsed = false;
+            hintUsed = false;
+            quizButton.disabled = false;
+            quizButton.textContent = 'hint';
+
+            // Clear previous game elements if any
+            clearPreviousGame();
+
+            // Initialize the game display
+            createCanvasForWords();
+            updateSentenceDisplay();
+            createLetterButtons();
+            setCurrentWord(0);
+
+            // Show game elements
+            document.getElementById('sentenceDisplay').style.display = 'flex';
+            document.getElementById('horizontalScroll').style.display = 'block';
+            document.getElementById('letters').style.display = 'flex';
+            document.querySelector('.guess-word-container').style.display = 'block';
+        }
+
+        function clearPreviousGame() {
+            // Clear canvases
+            canvasContainer.innerHTML = '';
+            // Reset letter buttons
+            document.getElementById('letters').innerHTML = '';
+            // Reset sentence display
+            document.getElementById('sentenceDisplay').innerHTML = '';
+            // Hide wildcard keyboard if visible
+            hideWildCardKeyboard();
+            // Reset devils message
+            devilMessage.textContent = '';
+            // Reset flash overlay
+            flashOverlay.style.opacity = '0';
+        }
 
         function drawStand(canvasIndex) {
             const canvas = document.getElementById(`hangmanCanvas${canvasIndex}`);
@@ -379,42 +736,45 @@
             const ctx = canvas.getContext('2d');
             ctx.strokeStyle = '#e63946';
             ctx.lineWidth = 3;
-            // Drawing parts based on remaining attempts
-            if (attempts <= 5) {
+            const totalParts = maxAttemptsPerWord;
+            const partsToDraw = totalParts - attempts;
+
+            if (partsToDraw >= 1) {
                 ctx.beginPath();
                 ctx.arc(100, 70, 15, 0, Math.PI * 2);
                 ctx.stroke(); // Head
             }
-            if (attempts <= 4) {
+            if (partsToDraw >= 2) {
                 ctx.beginPath();
                 ctx.moveTo(100, 85);
                 ctx.lineTo(100, 110);
                 ctx.stroke(); // Body
             }
-            if (attempts <= 3) {
+            if (partsToDraw >= 3) {
                 ctx.beginPath();
                 ctx.moveTo(100, 90);
                 ctx.lineTo(80, 100);
                 ctx.stroke(); // Left Arm
             }
-            if (attempts <= 2) {
+            if (partsToDraw >= 4) {
                 ctx.beginPath();
                 ctx.moveTo(100, 90);
                 ctx.lineTo(120, 100);
                 ctx.stroke(); // Right Arm
             }
-            if (attempts <= 1) {
+            if (partsToDraw >= 5) {
                 ctx.beginPath();
                 ctx.moveTo(100, 110);
                 ctx.lineTo(80, 130);
                 ctx.stroke(); // Left Leg
             }
-            if (attempts === 0) {
+            if (partsToDraw >= 6) {
                 ctx.beginPath();
                 ctx.moveTo(100, 110);
                 ctx.lineTo(120, 130);
                 ctx.stroke(); // Right Leg
             }
+            // Add more parts if maxAttemptsPerWord is increased
         }
 
         function updateSentenceDisplay() {
@@ -433,7 +793,7 @@
         }
 
         function checkGameStatus() {
-            if (remainingAttemptsPerWord.some(attempts => attempts <= 0) || devils >= 2) {
+            if (remainingAttemptsPerWord.some(attempts => attempts <= 0) || devils >= maxDevils) {
                 setTimeout(() => {
                     gameOverMessage.textContent = "The sentence was: " + chosenSentence;
                     gameOverPopup.style.display = 'block';
@@ -449,6 +809,7 @@
 
         function createLetterButtons() {
             const lettersDiv = document.getElementById('letters');
+            lettersDiv.innerHTML = ''; // Clear existing buttons
             for (let i = 65; i <= 90; i++) {
                 const letterButton = document.createElement('button');
                 letterButton.textContent = String.fromCharCode(i);
@@ -460,16 +821,23 @@
                     if (words[currentWordIndex].includes(letter)) {
                         updateSentenceDisplay();
                         correctGuessSound.play();
-                        if (words[currentWordIndex].length > 4 && words[currentWordIndex].split('').every(letter => guessedLetters.includes(letter + currentWordIndex))) {
-                            wildCardAvailable = true;
-                            alert("You've earned a Wild Card letter! Use it wisely.");
-                showWildCardKeyboard();
-                wildcardSound.play();
+                        // Wildcard logic
+                        if (
+                            wildCardAvailable &&
+                            words[currentWordIndex].length > 4 &&
+                            words[currentWordIndex].split('').every(letter => guessedLetters.includes(letter + currentWordIndex))
+                        ) {
+                            if (wildcardsUsed < maxWildcards) {
+                                wildcardsUsed++;
+                                alert("You've earned a Wild Card letter! Use it wisely.");
+                                showWildCardKeyboard();
+                            }
                         }
                     } else {
                         remainingAttemptsPerWord[currentWordIndex]--;
                         drawHangman(remainingAttemptsPerWord[currentWordIndex], currentWordIndex);
                         wrongGuessSound.play();
+                        
                     }
                     checkGameStatus();
                 });
@@ -478,8 +846,11 @@
         }
 
         function createCanvasForWords() {
+            // Clear existing canvases
+            canvasContainer.innerHTML = '';
+
             const spacer = document.createElement('div');
-            spacer.style.width = '150px'; // Add extra space to the beginning
+            spacer.style.width = '150px'; // Extra space
             canvasContainer.appendChild(spacer);
 
             words.forEach((_, index) => {
@@ -521,28 +892,36 @@
         }
 
         function useWildCard(letter) {
-            const buttons = document.querySelectorAll('.letter-btn');
-            buttons.forEach(button => {
-                if (button.textContent === letter) {
-                    button.disabled = true;
-                    button.style.backgroundColor = '#ff69b4'; // Change to pink to indicate used wildcard
-                    button.style.color = '#1e1e2f';
+            // Apply the letter to all words where it appears
+            words.forEach((word, index) => {
+                if (word.includes(letter)) {
+                    word.split('').forEach((char, charIndex) => {
+                        if (char === letter && !guessedLetters.includes(char + index)) {
+                            guessedLetters.push(char + index);
+                        }
+                    });
                 }
             });
-            words.forEach((word, index) => {
-                word.split('').forEach((char, charIndex) => {
-                    if (char === letter && !guessedLetters.includes(char + index)) {
-                        guessedLetters.push(char + index);
-                    }
-                });
-            });
-            guessedLetters.push(letter);
             updateSentenceDisplay();
             checkGameStatus();
+            highlightAndDisableWildCardLetter(letter);
             hideWildCardKeyboard();
-        
-            checkGameStatus();
-            hideWildCardKeyboard();
+            decree.play();
+        }
+
+        function highlightAndDisableWildCardLetter(letter) {
+            setTimeout(() => {
+                const allLetterButtons = document.querySelectorAll('.letter-btn, .wildcard-key');
+
+                allLetterButtons.forEach(button => {
+                    if (button.textContent === letter) {
+                        button.style.backgroundColor = 'pink';
+                        button.disabled = true;
+                        button.setAttribute('disabled', 'true');
+                        button.classList.add('disabled');
+                    }
+                });
+            }, 50);
         }
 
         function showWildCardKeyboard() {
@@ -567,21 +946,41 @@
             document.getElementById('wildcardMessage').style.display = 'none';
         }
 
+        function flashScreen() {
+            flashOverlay.style.opacity = '0.8';
+            setTimeout(() => {
+                flashOverlay.style.opacity = '0';
+            }, 1000);
+        }
+
         function guessFullWord() {
-            const guessWordInput = document.getElementById('guessWordInput').value.toUpperCase();
+            const guessWordInputElement = document.getElementById('guessWordInput');
+            const guessWordInput = guessWordInputElement.value.toUpperCase().trim();
+            guessWordInputElement.value = ''; // Clear input
+
             if (guessWordInput === words[currentWordIndex]) {
-                if (words[currentWordIndex].length > 4 && guessedLetters.filter(letter => letter.endsWith(currentWordIndex)).length <= 2) {
-                    wildCardAvailable = true;
-                    alert("You've earned a Wild Card letter! Use it wisely.");
-                    showWildCardKeyboard();
+                // Correct guess
+                const wordLength = words[currentWordIndex].length;
+                const lettersGuessedOnWord = guessedLetters.filter(letter => letter.endsWith(currentWordIndex)).length;
+
+                if (wildCardAvailable && (
+                    (wordLength > 4 && lettersGuessedOnWord <= 2) ||
+                    ((wordLength === 3 || wordLength === 4) && lettersGuessedOnWord === 0)
+                )) {
+                    if (wildcardsUsed < maxWildcards) {
+                        wildcardsUsed++;
+                        alert("You've earned a Wild Card letter! Use it wisely.");
+                        showWildCardKeyboard();
+                    }
                 }
                 guessedLetters.push(...words[currentWordIndex].split('').map(letter => letter + currentWordIndex));
                 updateSentenceDisplay();
                 correctGuessSound.play();
             } else {
                 devils++;
-                devilMessage.textContent = `Devils: ${devils} / 2`;
+                devilMessage.textContent = `Devils: ${devils} / ${maxDevils}`;
                 wrongGuessSound.play();
+                flashScreen();
                 devilSound.play();
             }
             checkGameStatus();
@@ -589,12 +988,88 @@
 
         document.getElementById('guessWordBtn').addEventListener('click', guessFullWord);
 
-        // Initialize Game
-        createCanvasForWords();
-        updateSentenceDisplay();
-        createLetterButtons();
-        setCurrentWord(0); // Start with the first word
+        // Also allow pressing Enter key to submit the word guess
+        document.getElementById('guessWordInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                guessFullWord();
+            }
+        });
+
+        // Quiz Event Listeners
+        quizButton.addEventListener('click', () => {
+            if (!quizUsed) {
+                openQuizModal();
+            }
+        });
+
+        closeQuizModal.addEventListener('click', () => {
+            closeQuizModalFunction();
+        });
+
+        submitQuizAnswer.addEventListener('click', () => {
+            checkQuizAnswer();
+        });
+
+        // Quiz Functions
+        function openQuizModal() {
+            const randomQuiz = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            quizQuestionElement.textContent = randomQuiz.question;
+            quizModal.setAttribute('data-answer', randomQuiz.answer.toLowerCase());
+            quizAnswerInput.value = '';
+            quizModal.style.display = 'block';
+        }
+
+        function closeQuizModalFunction() {
+            quizModal.style.display = 'none';
+        }
+
+        function checkQuizAnswer() {
+            const correctAnswer = quizModal.getAttribute('data-answer');
+            const playerAnswer = quizAnswerInput.value.toLowerCase().trim();
+
+            if (playerAnswer === correctAnswer) {
+                alert('Correct! You have unlocked a hint.');
+                quizUsed = true;
+                quizButton.disabled = true;
+                quizButton.textContent = 'Quiz Used';
+                unlockHint();
+                closeQuizModalFunction();
+            } else {
+                alert('Incorrect answer. Try again.');
+                closeQuizModalFunction();
+            }
+        }
+
+        function unlockHint() {
+            // Automatically use the hint
+            useHint();
+        }
+
+        function useHint() {
+            if (hintUsed) {
+                alert('You have already used your hint.');
+                return;
+            }
+
+            const currentWord = words[currentWordIndex];
+            const unguessedLetters = currentWord.split('').filter(letter => !guessedLetters.includes(letter + currentWordIndex));
+
+            if (unguessedLetters.length > 0) {
+                const randomLetter = unguessedLetters[Math.floor(Math.random() * unguessedLetters.length)];
+                guessedLetters.push(randomLetter + currentWordIndex);
+                updateSentenceDisplay();
+                // Disable the letter button
+                const letterButton = document.querySelector(`.letter-btn:not([disabled])[textContent="${randomLetter}"]`);
+                if (letterButton) {
+                    letterButton.disabled = true;
+                }
+                alert(`Hint used! The letter "${randomLetter}" has been revealed.`);
+                hintUsed = true;
+            } else {
+                alert('No unguessed letters left in this word.');
+            }
+        }
+
     </script>
-    
 </body>
 </html>
