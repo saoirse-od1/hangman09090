@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Sentence Hangman Game</title>
+    <title>LOTR x Winter Olympics Sentence Hangman</title>
     <!-- Link to Google Fonts for 'Roboto' -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <!-- Include your CSS styles -->
@@ -74,6 +75,7 @@
             flex: 0 0 auto;
             transition: transform 0.3s, border-color 0.3s;
         }
+
         .hangmanCanvas.active {
             transform: scale(1.1);
             border-color: #00ff00;
@@ -89,6 +91,7 @@
             gap: 10px;
             max-width: 90vw;
         }
+
         .wordDisplay {
             cursor: pointer;
             padding: 8px 10px;
@@ -97,6 +100,7 @@
             background-color: #3b3b52;
             transition: background-color 0.3s, color 0.3s;
         }
+
         .wordDisplay.active {
             background-color: #ffcc00;
             color: #1e1e2f;
@@ -111,6 +115,7 @@
             max-width: 90vw;
             gap: 10px;
         }
+
         .letter-btn {
             display: inline-block;
             margin: 5px;
@@ -123,10 +128,12 @@
             font-size: 18px;
             transition: background-color 0.3s, transform 0.3s;
         }
+
         .letter-btn:hover:not(:disabled) {
             background-color: #e6b800;
             transform: scale(1.1);
         }
+
         .letter-btn:disabled {
             background-color: #444;
             color: #999;
@@ -147,6 +154,7 @@
             animation: rainbowGlow 1s infinite alternate;
             z-index: 100;
         }
+
         .wildcard-key {
             display: inline-block;
             margin: 5px;
@@ -159,9 +167,11 @@
             font-size: 18px;
             transition: background-color 0.3s, transform 0.3s;
         }
+
         .wildcard-key:hover {
             transform: scale(1.1);
         }
+
         .wildcard-message {
             display: none;
             font-size: 48px;
@@ -176,6 +186,7 @@
         .guess-word-container {
             margin-top: 20px;
         }
+
         .guess-word-input {
             padding: 10px;
             font-size: 18px;
@@ -183,6 +194,7 @@
             border: none;
             margin-right: 10px;
         }
+
         .guess-word-btn {
             padding: 10px 15px;
             font-size: 18px;
@@ -192,9 +204,11 @@
             border-radius: 8px;
             cursor: pointer;
         }
+
         .guess-word-btn:hover {
             background-color: #d32f2f;
         }
+
         .devil-message {
             font-size: 24px;
             color: #e63946;
@@ -202,7 +216,9 @@
         }
 
         /* Popups */
-        .rules-popup, .game-over-popup, .win-popup {
+        .rules-popup,
+        .game-over-popup,
+        .win-popup {
             display: none;
             position: fixed;
             top: 50%;
@@ -218,6 +234,7 @@
             overflow-y: auto;
             z-index: 10;
         }
+
         .close-btn {
             position: absolute;
             top: 10px;
@@ -267,6 +284,7 @@
             z-index: 5;
             transition: background-color 0.3s, transform 0.3s;
         }
+
         .music-toggle:hover {
             background-color: #e6b800;
             transform: scale(1.05);
@@ -276,7 +294,8 @@
         .quiz-btn {
             position: absolute;
             top: 20px;
-            left: 150px; /* Adjust as needed */
+            left: 150px;
+            /* Adjust as needed */
             background-color: #ffcc00;
             color: #1e1e2f;
             border: none;
@@ -287,10 +306,12 @@
             z-index: 5;
             transition: background-color 0.3s, transform 0.3s;
         }
+
         .quiz-btn:hover {
             background-color: #e6b800;
             transform: scale(1.05);
         }
+
         .quiz-btn:disabled {
             background-color: #444;
             color: #999;
@@ -309,6 +330,7 @@
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.8);
         }
+
         .quiz-content {
             background-color: #2b2b40;
             margin: 10% auto;
@@ -320,6 +342,7 @@
             color: #ffcc00;
             position: relative;
         }
+
         #quizAnswerInput {
             width: calc(100% - 20px);
             padding: 10px;
@@ -328,6 +351,7 @@
             border-radius: 5px;
             border: none;
         }
+
         .submit-quiz-btn {
             margin-top: 15px;
             padding: 10px 20px;
@@ -337,9 +361,11 @@
             border-radius: 8px;
             cursor: pointer;
         }
+
         .submit-quiz-btn:hover {
             background-color: #45a049;
         }
+
         .close-quiz-btn {
             position: absolute;
             top: 10px;
@@ -358,20 +384,55 @@
 
         /* Animations */
         @keyframes rainbowGlow {
-            0% { background-color: #ff0000; }
-            20% { background-color: #ff7f00; }
-            40% { background-color: #ffff00; }
-            60% { background-color: #00ff00; }
-            80% { background-color: #0000ff; }
-            100% { background-color: #8b00ff; }
+            0% {
+                background-color: #ff0000;
+            }
+
+            20% {
+                background-color: #ff7f00;
+            }
+
+            40% {
+                background-color: #ffff00;
+            }
+
+            60% {
+                background-color: #00ff00;
+            }
+
+            80% {
+                background-color: #0000ff;
+            }
+
+            100% {
+                background-color: #8b00ff;
+            }
         }
+
         @keyframes flashText {
-            0% { color: #ff0000; }
-            20% { color: #ff7f00; }
-            40% { color: #ffff00; }
-            60% { color: #00ff00; }
-            80% { color: #0000ff; }
-            100% { color: #8b00ff; }
+            0% {
+                color: #ff0000;
+            }
+
+            20% {
+                color: #ff7f00;
+            }
+
+            40% {
+                color: #ffff00;
+            }
+
+            60% {
+                color: #00ff00;
+            }
+
+            80% {
+                color: #0000ff;
+            }
+
+            100% {
+                color: #8b00ff;
+            }
         }
 
         /* Header */
@@ -381,10 +442,18 @@
             color: #ffcc00;
         }
 
+        .theme-subtitle {
+            margin-top: -10px;
+            margin-bottom: 20px;
+            color: #ffcc00;
+            font-size: 18px;
+        }
+
         /* Difficulty Selection */
         .difficulty-selection {
             margin-bottom: 20px;
         }
+
         .difficulty-btn {
             margin: 5px;
             padding: 10px 20px;
@@ -396,6 +465,7 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
         }
+
         .difficulty-btn:hover {
             background-color: #e6b800;
             transform: scale(1.1);
@@ -407,8 +477,10 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Sentence Hangman Game</h1>
+    <p class="theme-subtitle">Theme: Lord of the Rings x Winter Olympics</p>
     <button id="questionMark" class="question-mark">?</button>
     <button id="musicToggle" class="music-toggle">Music Off</button>
     <button id="quizButton" class="quiz-btn">Hint</button>
@@ -418,14 +490,16 @@
         <button id="easyBtn" class="difficulty-btn">Easy</button>
         <button id="mediumBtn" class="difficulty-btn">Medium</button>
         <button id="hardBtn" class="difficulty-btn">Hard</button><br>
-        <p>you can now use guess full word option on three letter words if you hsve not already guessed a letter on them ie , if you think a word is the , you can guess full word and get a wildcard</p>
-        
+        <p>you can now use guess full word option on three letter words if you hsve not already guessed a letter on them
+            ie , if you think a word is the , you can guess full word and get a wildcard</p>
+
     </div>
 
     <!-- Rules Popup -->
     <div id="rulesPopup" class="rules-popup">
         <button id="closeRules" class="close-btn">&times;</button>
         <h2>Game Rules</h2>
+        <p><strong>Theme:</strong> Guess sentences inspired by Lord of the Rings and Winter Olympics events.</p>
         <p>Select a difficulty level to start the game:</p>
         <ul>
             <li><strong>Easy:</strong> Simple sentences, more attempts, wildcards available.</li>
@@ -499,24 +573,42 @@
 
         // Sentence Arrays with Similar Lengths
         const easySentences = [
-            "The sun shines brightly today",
-            "She walks her dog every morning",
-            "They enjoy playing in the park",
-            "He reads a book before bed",
-            "We love eating ice cream"
+            "Frodo carries the ring to Mordor",
+            "Sam cooks potatoes by the fire",
+            "Gandalf rides into the Shire",
+            "Legolas sees far across the plains",
+            "Gimli swings his axe with pride",
+            "Merry and Pippin steal second breakfast",
+            "Aragorn tracks orcs through the forest",
+            "Boromir blows the horn of Gondor",
+            "The hobbits hide under tree roots",
+            "The fellowship rests in Rivendell",
+            "Skiers race down icy mountain slopes",
+            "Figure skaters spin under bright arena lights"
         ];
 
         const mediumSentences = [
-            "The artist paints with vibrant colors",
-            "Birds migrate south during winter",
-            "She solved the puzzle quickly",
-            "They debated the topic intensely",
-            "He discovered a hidden treasure"
+            "At Helms Deep the defenders hold the wall until dawn",
+            "Treebeard leads the Ents to Isengard after hearing the hobbit tale",
+            "Arwen chooses a mortal life because her heart belongs to Aragorn",
+            "Faramir resists the ring and sends Frodo onward to his fate",
+            "Eowyn rides to battle in secret and faces the Witch King",
+            "Smeagol guides the hobbits through dark paths above dead marshes",
+            "The beacons of Gondor blaze across the mountains in the night",
+            "Elrond reforges Narsil so the king may return to Men",
+            "Galadriel offers gifts that later aid fellowship survival",
+            "The riders of Rohan answer the call of Gondor without delay",
+            "Canada faced cheating allegations during a curling match review",
+            "In biathlon the athletes shoot calmly after a demanding ski loop"
         ];
 
         const hardSentences = [
-        "exploring the depths of the ocean she discovered an octopuses garden with creatures that defied all known classifications in history and sparked endless curiosity",
-
+            "Though burdened by fear and doubt Frodo continues toward Mount Doom trusting that even the smallest person can change the future",
+            "When hope seems lost before the Black Gate Aragorn marches with a smaller force to distract Sauron from the ring bearer",
+            "In the mines of Moria Gandalf confronts the Balrog on the narrow bridge and falls into shadow to protect the fellowship",
+            "After the voice of Saruman sows confusion among kings and captains Gandalf counters with clear purpose and unites them against despair",
+            "As the age of elves wanes and the dominion of Men begins old friendships endure proving that mercy often achieves what power cannot",
+            "Under freezing pressure the speed skater leans through each turn knowing a single mistake can erase years of relentless training"
         ];
 
         // Declare Variables
@@ -573,7 +665,7 @@
                 question: "What is my fav dinner ( answer in one word )",
                 answer: "roast"
             },
-          
+
             // Add more quiz questions as needed
         ];
 
@@ -837,7 +929,7 @@
                         remainingAttemptsPerWord[currentWordIndex]--;
                         drawHangman(remainingAttemptsPerWord[currentWordIndex], currentWordIndex);
                         wrongGuessSound.play();
-                        
+
                     }
                     checkGameStatus();
                 });
@@ -989,7 +1081,7 @@
         document.getElementById('guessWordBtn').addEventListener('click', guessFullWord);
 
         // Also allow pressing Enter key to submit the word guess
-        document.getElementById('guessWordInput').addEventListener('keyup', function(event) {
+        document.getElementById('guessWordInput').addEventListener('keyup', function (event) {
             if (event.key === 'Enter') {
                 guessFullWord();
             }
@@ -1072,4 +1164,5 @@
 
     </script>
 </body>
+
 </html>
