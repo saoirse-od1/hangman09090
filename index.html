@@ -603,8 +603,16 @@
         ];
 
         const hardSentences = [
-            "she plucks the leaf and chops it up just so, then away to the blender she goes, blends it up and applies to the burn, its laras aloe vera parade ",
-
+            ,
+            "deep in the mines of moria the fellowship heard the drums echo loud before the shadow and flame appeared on the bridge",
+            "the dark rider sniffed the air at the crossroads then turned his horse toward the scent of the one ring bearer",
+            "after the long luge run down caradhras the dwarves of erebor celebrated with a barrel of the finest ale",
+            "sauron's eye swept across the snow covered peaks like a searchlight hunting for the skier who carried his stolen gold medal",
+            "the figure skater carved an elvish rune into the ice then vanished into the crowd like a ranger of the north",
+            "pippin knocked the skeleton into the well and the drumbeats began just as the curling team released their final stone",
+            "at the top of the slalom course aragorn strapped on his skis tightened his elvish cloak and pushed off into the storm",
+            "the nazgul circled the ski jump tower three times before the hobbit leapt and soared further than any mortal had before",
+            "legolas walked on top of the snow while everyone else sank knee deep which gave him an unfair advantage in the biathlon",
         ];
 
         // Declare Variables
@@ -753,7 +761,7 @@
             }
 
             // Initialize variables
-            words = chosenSentence.split(' ');
+            words = chosenSentence.trim().split(/\s+/);
             guessedLetters = [];
             remainingAttemptsPerWord = Array(words.length).fill(maxAttemptsPerWord);
             currentWordIndex = 0;
@@ -871,7 +879,7 @@
             words.forEach((word, index) => {
                 const wordSpan = document.createElement('span');
                 wordSpan.classList.add('wordDisplay');
-                wordSpan.textContent = word.split('').map(letter => guessedLetters.includes(letter + index) ? letter : '_').join(' ');
+                wordSpan.textContent = word.split('').map(letter => letter === ',' ? ',' : guessedLetters.includes(letter + ':' + index) ? letter : '_').join(' ');
                 wordSpan.addEventListener('click', () => setCurrentWord(index));
                 if (index === currentWordIndex) {
                     wordSpan.classList.add('active');
@@ -887,7 +895,7 @@
                     gameOverPopup.style.display = 'block';
                     gameOverSound.play();
                 }, 100);
-            } else if (words.every((word, index) => word.split('').every(letter => guessedLetters.includes(letter + index)))) {
+            } else if (words.every((word, index) => word.split('').every(letter => letter === ',' || guessedLetters.includes(letter + ':' + index)))) {
                 setTimeout(() => {
                     winPopup.style.display = 'block';
                     winSound.play();
@@ -904,7 +912,7 @@
                 letterButton.classList.add('letter-btn');
                 letterButton.addEventListener('click', function () {
                     const letter = this.textContent;
-                    guessedLetters.push(letter + currentWordIndex);
+                    guessedLetters.push(letter + ':' + currentWordIndex);
                     this.disabled = true;
                     if (words[currentWordIndex].includes(letter)) {
                         updateSentenceDisplay();
@@ -913,7 +921,7 @@
                         if (
                             wildCardAvailable &&
                             words[currentWordIndex].length > 4 &&
-                            words[currentWordIndex].split('').every(letter => guessedLetters.includes(letter + currentWordIndex))
+                            words[currentWordIndex].split('').every(letter => guessedLetters.includes(letter + ':' + currentWordIndex))
                         ) {
                             if (wildcardsUsed < maxWildcards) {
                                 wildcardsUsed++;
@@ -961,9 +969,9 @@
             const buttons = document.querySelectorAll('.letter-btn');
             buttons.forEach(button => button.disabled = false);
             guessedLetters.forEach(guessed => {
-                if (guessed.endsWith(currentWordIndex)) {
+                if (guessed.endsWith(':' + currentWordIndex)) {
                     buttons.forEach(button => {
-                        if (button.textContent === guessed[0]) {
+                        if (button.textContent === guessed.split(':')[0]) {
                             button.disabled = true;
                         }
                     });
@@ -984,8 +992,8 @@
             words.forEach((word, index) => {
                 if (word.includes(letter)) {
                     word.split('').forEach((char, charIndex) => {
-                        if (char === letter && !guessedLetters.includes(char + index)) {
-                            guessedLetters.push(char + index);
+                        if (char === letter && !guessedLetters.includes(char + ':' + index)) {
+                            guessedLetters.push(char + ':' + index);
                         }
                     });
                 }
@@ -1049,7 +1057,7 @@
             if (guessWordInput === words[currentWordIndex]) {
                 // Correct guess
                 const wordLength = words[currentWordIndex].length;
-                const lettersGuessedOnWord = guessedLetters.filter(letter => letter.endsWith(currentWordIndex)).length;
+                const lettersGuessedOnWord = guessedLetters.filter(letter => letter.endsWith(':' + currentWordIndex)).length;
 
                 if (wildCardAvailable && (
                     (wordLength > 4 && lettersGuessedOnWord <= 2) ||
@@ -1061,7 +1069,7 @@
                         showWildCardKeyboard();
                     }
                 }
-                guessedLetters.push(...words[currentWordIndex].split('').map(letter => letter + currentWordIndex));
+                guessedLetters.push(...words[currentWordIndex].split('').map(letter => letter + ':' + currentWordIndex));
                 updateSentenceDisplay();
                 correctGuessSound.play();
             } else {
@@ -1140,11 +1148,11 @@
             }
 
             const currentWord = words[currentWordIndex];
-            const unguessedLetters = currentWord.split('').filter(letter => !guessedLetters.includes(letter + currentWordIndex));
+            const unguessedLetters = currentWord.split('').filter(letter => !guessedLetters.includes(letter + ':' + currentWordIndex));
 
             if (unguessedLetters.length > 0) {
                 const randomLetter = unguessedLetters[Math.floor(Math.random() * unguessedLetters.length)];
-                guessedLetters.push(randomLetter + currentWordIndex);
+                guessedLetters.push(randomLetter + ':' + currentWordIndex);
                 updateSentenceDisplay();
                 // Disable the letter button
                 const letterButton = document.querySelector(`.letter-btn:not([disabled])[textContent="${randomLetter}"]`);
